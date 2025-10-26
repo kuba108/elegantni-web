@@ -1,3 +1,5 @@
+'use client';
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Building2, Code, Boxes, TrendingUp } from "lucide-react";

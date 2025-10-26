@@ -1,3 +1,5 @@
+'use client';
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Lightbulb, LineChart, CheckCircle2, Wrench, Code2, Shield } from "lucide-react";

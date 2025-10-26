@@ -1,10 +1,12 @@
+'use client';
+
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ExternalLink, Star, Award, Code, Rocket, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import projects from "@/data/projects";
 
 const categoryColors = {
   ecommerce: "from-blue-500 to-blue-600",
@@ -21,12 +23,6 @@ const categoryLabels = {
 };
 
 export default function ProjectsSection() {
-  const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list('order'),
-    initialData: [],
-  });
-
   const featuredProjects = projects.filter(p => p.featured);
 
   return (
@@ -65,11 +61,13 @@ export default function ProjectsSection() {
                 >
                   <Card className="h-full border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105 overflow-hidden bg-white">
                     {project.image_url && (
-                      <div className="h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-                        <img 
-                          src={project.image_url} 
+                      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                        <Image
+                          src={project.image_url}
                           alt={project.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          fill
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>
                     )}
@@ -124,11 +122,15 @@ export default function ProjectsSection() {
                 <div className="md:col-span-2 bg-gradient-to-br from-blue-100 via-violet-100 to-orange-100 p-8 flex items-center justify-center">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-violet-600 rounded-3xl blur-2xl opacity-20"></div>
-                    <img 
-                      src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop" 
-                      alt="Profil"
-                      className="relative w-64 h-64 rounded-3xl object-cover shadow-2xl border-4 border-white"
-                    />
+                    <div className="relative w-64 h-64 rounded-3xl shadow-2xl border-4 border-white overflow-hidden">
+                      <Image
+                        src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop"
+                        alt="Profil"
+                        fill
+                        sizes="256px"
+                        className="rounded-3xl object-cover"
+                      />
+                    </div>
                     <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
                       <Award className="w-12 h-12 text-white" />
                     </div>
@@ -192,8 +194,8 @@ export default function ProjectsSection() {
 
                   <div className="pt-6 border-t border-gray-200">
                     <p className="text-gray-700 italic">
-                      "Váš úspěch je mým úspěchem. Vytvářím řešení, která fungují dlouhodobě 
-                      a pomáhají firmám růst."
+                      &quot;Váš úspěch je mým úspěchem. Vytvářím řešení, která fungují
+                      dlouhodobě a pomáhají firmám růst.&quot;
                     </p>
                   </div>
                 </div>
@@ -201,12 +203,6 @@ export default function ProjectsSection() {
             </CardContent>
           </Card>
         </motion.div>
-
-        {isLoading && (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto"></div>
-          </div>
-        )}
       </div>
     </section>
   );

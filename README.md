@@ -1,20 +1,17 @@
-# Base44 App
+# Elegantní Web
 
+Marketingová prezentace a portfolio pro elegantniweb.cz postavené na Next.js 14, Reactu a Tailwind CSS.
 
-This app was created automatically by Base44.
-It's a Vite+React app that communicates with the Base44 API.
-
-## Running the app
+## Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
-## Building the app
+## Production build
 
 ```bash
-npm run build
+pnpm run build
+pnpm run start
 ```
-
-For more information and support, please contact Base44 support at app@base44.com.

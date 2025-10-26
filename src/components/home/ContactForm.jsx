@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -6,8 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { base44 } from "@/api/base44Client";
 import { Send, CheckCircle, Mail, Phone, MessageSquare } from "lucide-react";
+
+const fakeSubmit = async (payload) => {
+  console.info("Contact form submission (placeholder)", payload);
+  await new Promise((resolve) => setTimeout(resolve, 400));
+};
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -25,7 +31,7 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      await base44.entities.ContactSubmission.create(formData);
+      await fakeSubmit(formData);
       setSubmitted(true);
       setFormData({
         name: "",
