@@ -62,9 +62,10 @@ export async function POST(request) {
 
     await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: 'majak108@gmail.com',
-      subject: 'Hello World',
-      html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+      to: contactEmail,
+      reply_to: email,
+      subject: `Nová poptávka od ${name}`,
+      html: textContent,
     });
 
     return Response.json({ success: true }, { status: 200 });
