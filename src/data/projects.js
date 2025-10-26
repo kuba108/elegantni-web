@@ -10,11 +10,11 @@ const projects = [
       "Kompletní vývoj e-commerce platformy se zaměřením na škálovatelnost, personalizaci a napojení na interní logistiku."
   },
   {
-    id: "elegantniweb",
-    name: "elegantniweb.cz",
-    category: "web",
+    id: "prodamauto",
+    name: "prodamauto.cz",
+    category: "inzert_web",
     featured: true,
-    url: "https://www.elegantniweb.cz",
+    url: "https://www.prodamauto.cz",
     image_url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop",
     description:
       "Moderní prezentační web postavený na Next.js a Tailwind CSS s důrazem na výkon, animace a plynulou UX."

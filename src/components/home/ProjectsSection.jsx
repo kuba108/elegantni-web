@@ -10,6 +10,7 @@ import projects from "@/data/projects";
 
 const categoryColors = {
   ecommerce: "from-blue-500 to-blue-600",
+  inzert_web: "from-green-500 to-green-600",
   web: "from-violet-500 to-violet-600",
   funnel: "from-orange-500 to-orange-600",
   system: "from-green-500 to-green-600"
@@ -17,6 +18,7 @@ const categoryColors = {
 
 const categoryLabels = {
   ecommerce: "E-commerce",
+  inzert_web: "Inzertní web",
   web: "Webové stránky",
   funnel: "Prodejní funnel",
   system: "Interní systémy"

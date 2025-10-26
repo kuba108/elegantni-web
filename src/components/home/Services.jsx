@@ -17,16 +17,16 @@ const services = [
     icon: Globe,
     title: "Webové stránky",
     description: "Moderní one-page a vícestránkové weby šité na míru vašemu byznysu. Rychlé, responzivní, SEO optimalizované.",
-    highlights: ["Responzivní design", "SEO optimalizace", "Rychlé načítání", "CMS integrace"],
+    highlights: ["Responzivní design", "SEO optimalizace", "Rychlé načítání"],
     gradient: "from-blue-500 to-blue-600"
   },
-  {
-    icon: ShoppingCart,
-    title: "E-shopy",
-    description: "Kompletní e-commerce řešení s napojením na dopravce, platební brány a účetní systémy jako ABRA.",
-    highlights: ["Platební brány", "Dopravci", "Účetní SW", "Admin systém"],
-    gradient: "from-violet-500 to-violet-600"
-  },
+  // {
+  //   icon: ShoppingCart,
+  //   title: "E-shopy",
+  //   description: "Kompletní e-commerce řešení s napojením na dopravce, platební brány a účetní systémy jako ABRA.",
+  //   highlights: ["Platební brány", "Dopravci", "Účetní SW", "Admin systém"],
+  //   gradient: "from-violet-500 to-violet-600"
+  // },
   {
     icon: Sparkles,
     title: "AI integrace",

@@ -90,7 +90,7 @@ export default function ConsultingSection() {
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
                       <p className="text-gray-700">
-                        <strong>Detailní analýza</strong> vašich požadavků a byznis procesů
+                        <strong>Detailní analýza</strong> vašich požadavků a byznys procesů
                       </p>
                     </div>
                     <div className="flex items-start gap-3">

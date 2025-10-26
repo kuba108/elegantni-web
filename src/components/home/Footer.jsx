@@ -23,7 +23,6 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-400">
               <li>Prodejní funnely</li>
               <li>Webové stránky</li>
-              <li>E-shopy</li>
               <li>AI integrace</li>
             </ul>
           </div>
@@ -33,11 +32,7 @@ export default function Footer() {
             <div className="space-y-3 text-gray-400">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-orange-400" />
-                <span>info@elegantniweb.cz</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-violet-400" />
-                <span>+420 XXX XXX XXX</span>
+                <span>kuba@elegantniweb.cz</span>
               </div>
             </div>
           </div>

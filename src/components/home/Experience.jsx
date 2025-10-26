@@ -37,7 +37,7 @@ export default function Experience() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900">Mixit.cz</h3>
-                <p className="text-gray-600">15 let aktivní spolupráce</p>
+                <p className="text-gray-600">15 let aktivní spolupráce. Projekt jsem založil po technické stránce a 15 vedl jako CTO.</p>
               </div>
             </div>
 
@@ -81,7 +81,7 @@ export default function Experience() {
                     Integrace s externími systémy
                   </h4>
                   <p className="text-gray-600 leading-relaxed">
-                    Napojení na dopravce (PPL, DPD, Zásilkovna), platební brány (GoPay, Comgate) 
+                    Napojení na dopravce (PPL, DPD, Zásilkovna), platební brány (PayU, Stripe) 
                     a účetní software (ABRA). Zkušenosti s reálnými podmínkami a provozem.
                   </p>
                 </div>
