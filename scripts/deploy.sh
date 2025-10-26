@@ -3,12 +3,13 @@
 set -euo pipefail
 
 REPO_URL=${DEPLOY_REPO_URL:-$(git config --get remote.origin.url 2>/dev/null || true)}
-BRANCH=${DEPLOY_GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
+BRANCH=${DEPLOY_GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")}
 REMOTE_USER=${DEPLOY_REMOTE_USER:-deploy}
 REMOTE_HOST=${DEPLOY_REMOTE_HOST:-217.16.188.195}
-REMOTE_PATH=${DEPLOY_REMOTE_PATH:-/var/www/elegantni-web}
-SERVICE_NAME=${DEPLOY_SERVICE_NAME:-elegantni-web}
+REMOTE_PATH=${DEPLOY_REMOTE_PATH:-/var/www/production/elegantni_web}
+SERVICE_NAME=${DEPLOY_SERVICE_NAME:-elegantni_web-node}
 REMOTE="${REMOTE_USER}@${REMOTE_HOST}"
+FORWARD_AGENT=${DEPLOY_FORWARD_AGENT:-true}
 
 if [[ -z "${REPO_URL}" ]]; then
   echo "Unable to determine git remote URL. Set DEPLOY_REPO_URL." >&2
@@ -17,7 +18,12 @@ fi
 
 echo "Deploying branch '${BRANCH}' to ${REMOTE}:${REMOTE_PATH}"
 
-ssh "${REMOTE}" "bash -s" <<EOF
+SSH_ARGS=()
+if [[ "${FORWARD_AGENT}" == "true" ]]; then
+  SSH_ARGS+=("-o" "ForwardAgent=yes")
+fi
+
+ssh "${SSH_ARGS[@]}" "${REMOTE}" "bash -s" <<EOF
 set -euo pipefail
 
 REPO_URL="${REPO_URL}"
@@ -43,19 +49,17 @@ else
 fi
 git reset --hard "origin/\${BRANCH}"
 
-if ! command -v pnpm >/dev/null; then
-  echo "pnpm missing, enabling via corepack"
-  command -v corepack >/dev/null && corepack enable pnpm >/dev/null 2>&1
-fi
-command -v pnpm >/dev/null || { echo "pnpm is required on the server." >&2; exit 1; }
+# ensure PNPM is on PATH
+source /var/www/.nvm/nvm.sh
+nvm use
 
 pnpm install --frozen-lockfile
 pnpm run build
 
 if command -v systemctl >/dev/null && systemctl list-unit-files | grep -q "^\\s*\${SERVICE_NAME}.service"; then
   echo "Restarting systemd service \${SERVICE_NAME}"
-  sudo systemctl restart "\${SERVICE_NAME}"
-  sudo systemctl status "\${SERVICE_NAME}" --no-pager
+  systemctl restart "\${SERVICE_NAME}"
+  systemctl status "\${SERVICE_NAME}" --no-pager
 else
   echo "systemd service '\${SERVICE_NAME}' not found. Start the app manually (e.g. 'pnpm run start') or create a systemd unit." >&2
 fi

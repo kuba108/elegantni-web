@@ -93,8 +93,8 @@ export default function HeroSection({ onScrollToContact, onScrollToCalendar }) {
             <div className="text-white/70">let zkušeností</div>
           </div>
           <div>
-            <div className="text-4xl md:text-5xl font-bold text-white mb-2">1 mld</div>
-            <div className="text-white/70">Kč objednávek</div>
+            <div className="text-4xl md:text-5xl font-bold text-white mb-2">1 mld+</div>
+            <div className="text-white/70">v Kč objednávek / rok</div>
           </div>
           <div>
             <div className="text-4xl md:text-5xl font-bold text-white mb-2">100%</div>
