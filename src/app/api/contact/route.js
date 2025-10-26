@@ -64,7 +64,7 @@ export async function POST(request) {
       from: 'onboarding@resend.dev',
       to: 'kuba@elegantniweb.cz',
       subject: `Nová poptávka`,
-      html: textContent,
+      html: '<p>Ahoj, toto je testovací email z Resend.</p>',
     });
 
     return Response.json({ success: true }, { status: 200 });
