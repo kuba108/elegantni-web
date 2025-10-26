@@ -46,3 +46,17 @@ sudo systemctl reload nginx
 ```
 
 Nezapomeňte doplnit `server_name` a zprovoznit TLS (např. pomocí Let's Encrypt) v odkomentovaných částech konfigurace.
+
+## Email (Resend)
+
+Kontaktní formulář odesílá email přes [Resend](https://resend.com/) pomocí API route `POST /api/contact`. V produkci nastavte následující proměnné prostředí:
+
+- `RESEND_API_KEY` – tajný API klíč z Resend dashboardu (nechte v `.env.local`, nesdílejte).
+- `CONTACT_EMAIL` – cílová emailová adresa, kam mají přicházet poptávky.
+- `RESEND_FROM_EMAIL` – (volitelné) adresa, ze které se email odešle. Musí být ověřená v Resend; pokud není uvedeno, použije se `kontakt@elegantniweb.cz`.
+
+Po přidání klíčů nezapomeňte:
+
+1. Ověřit doménu v Resend (SPF + DKIM záznamy).
+2. Na serveru aktualizovat jednotku/systemd tak, aby načítala nové proměnné (`Environment=` nebo `.env` soubor).
+3. Znovu nasadit (`pnpm run deploy`), aby build viděl nové hodnoty.

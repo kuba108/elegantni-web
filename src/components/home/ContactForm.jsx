@@ -10,11 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Send, CheckCircle, Mail, Phone, MessageSquare } from "lucide-react";
 
-const fakeSubmit = async (payload) => {
-  console.info("Contact form submission (placeholder)", payload);
-  await new Promise((resolve) => setTimeout(resolve, 400));
-};
-
 export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -25,13 +20,38 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  const submitContactForm = async (payload) => {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (error) {
+      // ignore JSON parse errors for empty responses
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Nepodařilo se odeslat zprávu.");
+    }
+
+    return data;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      await fakeSubmit(formData);
+      await submitContactForm(formData);
       setSubmitted(true);
       setFormData({
         name: "",
@@ -44,6 +64,7 @@ export default function ContactForm() {
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
       console.error("Error submitting form:", error);
+      setSubmitError(error.message || "Nepodařilo se odeslat zprávu.");
     }
 
     setIsSubmitting(false);
@@ -93,7 +114,7 @@ export default function ContactForm() {
                       Děkuji za zprávu!
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Ozvú se vám do 24 hodin
+                      Ozvu se vám do 24 hodin
                     </p>
                   </motion.div>
                 ) : (
@@ -178,10 +199,17 @@ export default function ContactForm() {
                         value={formData.message}
                         onChange={(e) => handleChange("message", e.target.value)}
                         placeholder="Popište váš projekt..."
+                        required
                         rows={5}
                         className="border-gray-200 focus:border-violet-500 focus:ring-violet-500"
                       />
                     </div>
+
+                    {submitError && (
+                      <p className="text-sm text-red-600 text-center">
+                        {submitError}
+                      </p>
+                    )}
 
                     <Button
                       type="submit"
