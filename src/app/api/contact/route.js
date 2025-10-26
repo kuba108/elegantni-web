@@ -52,19 +52,12 @@ export async function POST(request) {
       .filter(Boolean)
       .join("\n");
 
-    // await resend.emails.send({
-    //   from: fromEmail,
-    //   to: [contactEmail],
-    //   reply_to: email,
-    //   subject: `Nová poptávka od ${name}`,
-    //   text: textContent,
-    // });
-
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'majak108@gmail.com',
-      subject: 'Hello World',
-      html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+      from: fromEmail,
+      to: [contactEmail],
+      reply_to: email,
+      subject: `Nová poptávka od ${name}`,
+      text: textContent,
     });
 
     return Response.json({ success: true }, { status: 200 });
