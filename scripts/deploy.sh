@@ -56,11 +56,14 @@ nvm use
 pnpm install --frozen-lockfile
 pnpm run build
 
-if command -v systemctl >/dev/null && systemctl list-unit-files | grep -q "^\\s*\${SERVICE_NAME}.service"; then
-  echo "Restarting systemd service \${SERVICE_NAME}"
-  systemctl restart "\${SERVICE_NAME}"
-  systemctl status "\${SERVICE_NAME}" --no-pager
-else
-  echo "systemd service '\${SERVICE_NAME}' not found. Start the app manually (e.g. 'pnpm run start') or create a systemd unit." >&2
-fi
+sudo systemctl restart "\${SERVICE_NAME}"
+sudo systemctl status "\${SERVICE_NAME}" --no-pager
+
+# if command -v systemctl >/dev/null && systemctl list-unit-files | grep -q "^\\s*\${SERVICE_NAME}.service"; then
+#   echo "Restarting systemd service \${SERVICE_NAME}"
+#   sudo systemctl restart "\${SERVICE_NAME}"
+#   sudo systemctl status "\${SERVICE_NAME}" --no-pager
+# else
+#   echo "systemd service '\${SERVICE_NAME}' not found. Start the app manually (e.g. 'pnpm run start') or create a systemd unit." >&2
+# fi
 EOF
