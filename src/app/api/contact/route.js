@@ -63,8 +63,7 @@ export async function POST(request) {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: contactEmail,
-      reply_to: email,
-      subject: `Nová poptávka od ${name}`,
+      subject: `Nová poptávka`,
       html: textContent,
     });
 
