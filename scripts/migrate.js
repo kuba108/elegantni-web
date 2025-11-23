@@ -7,7 +7,7 @@ import { syncAdminUserModel } from "../src/models/AdminUser.js";
 
 async function migrate() {
   await verifyDatabaseConnection();
-  await Promise.all([syncAdminUserModel]);
+  await Promise.all([syncAdminUserModel()]);
   console.info("Database synced.");
   process.exit(0);
 }

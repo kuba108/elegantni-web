@@ -39,3 +39,12 @@ export const sequelize =
 if (!globalForSequelize.__elegantni_sequelize) {
   globalForSequelize.__elegantni_sequelize = sequelize;
 }
+
+export async function verifyDatabaseConnection() {
+  try {
+    await sequelize.authenticate();
+  } catch (error) {
+    console.error("Unable to connect to Postgres:", error);
+    throw error;
+  }
+}

@@ -54,7 +54,7 @@ export const AdminUser = sequelize.define(
 
 const globalForAdminUser = globalThis;
 
-function syncAdminUserModel() {
+export function syncAdminUserModel() {
   if (!globalForAdminUser.__elegantni_admin_user_sync) {
     globalForAdminUser.__elegantni_admin_user_sync = AdminUser.sync();
   }
