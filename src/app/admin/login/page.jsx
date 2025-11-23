@@ -14,7 +14,7 @@ export default async function AdminLoginPage() {
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-10 space-y-2">
           <p className="text-xs uppercase tracking-[0.4em] text-white/50">
-            Blixo Admin
+            Elegantniweb Admin
           </p>
           <h1 className="text-4xl font-semibold">Přihlášení</h1>
         </div>

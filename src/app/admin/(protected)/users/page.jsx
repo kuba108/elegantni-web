@@ -318,7 +318,7 @@ function CreateUserModal({
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
-              placeholder="admin@blixo.cz"
+              placeholder="admin@elegantniweb.cz"
             />
           </Field>
           <Field label="Jméno">

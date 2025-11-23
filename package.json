@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "node scripts/migrate.js",
+    "c": "node scripts/console.js",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
