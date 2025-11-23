@@ -7,6 +7,7 @@ import { ExternalLink, Star, Award, Code, Rocket, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import projects from "@/data/projects";
+import profileImg from "@/assets/images/profile/kuba-profile.png";
 
 const categoryColors = {
   ecommerce: "from-blue-500 to-blue-600",
@@ -126,15 +127,12 @@ export default function ProjectsSection() {
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-violet-600 rounded-3xl blur-2xl opacity-20"></div>
                     <div className="relative w-64 h-64 rounded-3xl shadow-2xl border-4 border-white overflow-hidden">
                       <Image
-                        src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop"
+                        src={profileImg.src}
                         alt="Profil"
                         fill
                         sizes="256px"
                         className="rounded-3xl object-cover"
                       />
-                    </div>
-                    <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
-                      <Award className="w-12 h-12 text-white" />
                     </div>
                   </div>
                 </div>
