@@ -8,8 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function CalendarSection() {
   const handleCalendarClick = () => {
-    // User will need to replace this with their actual Google Calendar scheduling link
-    window.open("https://calendar.google.com/calendar/appointments/schedules/AcZssZ0xYOUR_CALENDAR_LINK", "_blank");
+    window.open("https://calendar.app.google/tr2d6jb3mYNFnGkq7", "_blank");
   };
 
   return (
@@ -70,10 +69,6 @@ export default function CalendarSection() {
                   Otevřít kalendář
                   <Calendar className="w-5 h-5 ml-2" />
                 </Button>
-
-                <p className="text-sm text-gray-500 mt-6">
-                  * Pro aktivaci této funkce přidejte svůj Google Calendar odkaz v kódu komponenty
-                </p>
               </div>
             </CardContent>
           </Card>
