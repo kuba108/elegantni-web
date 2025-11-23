@@ -52,8 +52,8 @@ Nezapomeňte doplnit `server_name` a zprovoznit TLS (např. pomocí Let's Encryp
 Kontaktní formulář odesílá email přes [Resend](https://resend.com/) pomocí API route `POST /api/contact`. V produkci nastavte následující proměnné prostředí:
 
 - `RESEND_API_KEY` – tajný API klíč z Resend dashboardu (nechte v `.env.local`, nesdílejte).
-- `CONTACT_EMAIL` – cílová emailová adresa, kam mají přicházet poptávky.
-- `RESEND_FROM_EMAIL` – (volitelné) adresa, ze které se email odešle. Musí být ověřená v Resend; pokud není uvedeno, použije se `kontakt@elegantniweb.cz`.
+- `RESEND_TO_EMAIL` – cílová emailová adresa, kam mají přicházet poptávky.
+- `RESEND_FROM_EMAIL` – (volitelné) adresa, ze které se email odešle. Musí být ověřená v Resend; pokud není uvedeno, použije se `web@elegantniweb.cz`.
 
 Po přidání klíčů nezapomeňte:
 

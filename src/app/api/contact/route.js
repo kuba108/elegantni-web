@@ -32,11 +32,11 @@ export async function POST(request) {
     });
 
     const resendApiKey = process.env.RESEND_API_KEY;
-    const contactEmail = process.env.CONTACT_EMAIL;
+    const toEmail = process.env.RESEND_TO_EMAIL;
     const fromEmail =
-      process.env.RESEND_FROM_EMAIL ?? "kontakt@elegantniweb.cz";
+      process.env.RESEND_FROM_EMAIL ?? "web@elegantniai.cz";
 
-    if (!resendApiKey || !contactEmail) {
+    if (!resendApiKey || !toEmail) {
       const missing = !resendApiKey ? "RESEND_API_KEY" : "CONTACT_EMAIL";
       console.error(
         `Missing ${missing} environment variable. Inquiry stored with ID ${record.id}`
@@ -63,7 +63,7 @@ export async function POST(request) {
 
     await resend.emails.send({
       from: fromEmail,
-      to: [contactEmail],
+      to: 'kuba@elegantniweb.cz',
       reply_to: email,
       subject: `Nová poptávka od ${name}`,
       text: textContent,

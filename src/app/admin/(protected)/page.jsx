@@ -3,8 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { fetchOrders } from "@/api/orders";
+import { fetchContactForms } from "@/api/contactForms";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
+import StatCard from "@/components/admin/StatCard";
 
 const statCards = [
   { label: "Celkem objednávek", key: "total", accent: "text-white" },
@@ -72,6 +74,11 @@ export default function AdminDashboardPage() {
     toApprove: 0,
     approved: 0,
   });
+  const [inquiryStats, setInquiryStats] = useState({
+    total: 0,
+    pending: 0,
+    processed: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -79,11 +86,14 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     let isMounted = true;
-    async function loadOrders() {
+    async function loadDashboardData() {
       try {
-        const data = await fetchOrders();
+        const [ordersData, inquiriesData] = await Promise.all([
+          fetchOrders(),
+          fetchContactForms(),
+        ]);
         if (!isMounted) return;
-        const orders = data.orders || [];
+        const orders = ordersData.orders || [];
         const toApprove = orders.filter((o) => o.status === "to_approve").length;
         const approved = orders.filter((o) => o.status === "approved").length;
         setOrderStats({
@@ -91,13 +101,20 @@ export default function AdminDashboardPage() {
           toApprove,
           approved,
         });
+        const inquiries = inquiriesData.inquiries || [];
+        const processed = inquiries.filter((item) => item.processed).length;
+        setInquiryStats({
+          total: inquiries.length,
+          processed,
+          pending: inquiries.length - processed,
+        });
       } catch (err) {
         if (isMounted) setError(err.message);
       } finally {
         if (isMounted) setLoading(false);
       }
     }
-    loadOrders();
+    loadDashboardData();
     if (!quoteReady && motivationalQuotes.length > 0) {
       setQuoteIndex(Math.floor(Math.random() * motivationalQuotes.length));
       setQuoteReady(true);
@@ -151,11 +168,11 @@ export default function AdminDashboardPage() {
       {error && (
         <div className="bg-red-500/10 border border-red-400/40 text-red-200 px-4 py-3 rounded-2xl backdrop-blur-xl">
           {error}
-        </div>
-      )}
+      </div>
+    )}
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {statCards.map((card) => (
+    <div className="grid md:grid-cols-3 gap-6">
+      {statCards.map((card) => (
           <GlassCard key={card.key}>
             <CardContent className="p-6 space-y-4">
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">
@@ -176,6 +193,24 @@ export default function AdminDashboardPage() {
           </GlassCard>
         ))}
       </div>
+
+      <section className="grid md:grid-cols-3 gap-6">
+        <StatCard
+          label="Dotazy celkem"
+          value={inquiryStats.total}
+          sublabel="Přijaté kontaktní formuláře"
+        />
+        <StatCard
+          label="Čeká na odpověď"
+          value={inquiryStats.pending}
+          sublabel="Doporučeno vyřídit jako první"
+        />
+        <StatCard
+          label="Vyřízené dotazy"
+          value={inquiryStats.processed}
+          sublabel="Označené jako zpracované"
+        />
+      </section>
 
       <QuoteCard quote={activeQuote} onShuffle={handleShuffleQuote} />
     </div>
