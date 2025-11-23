@@ -1,29 +1,11 @@
 import { Resend } from "resend";
+import {
+  ContactForm,
+  ensureContactFormReady,
+} from "@/models/ContactForm";
 
 export async function POST(request) {
   try {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const contactEmail = process.env.CONTACT_EMAIL;
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "kontakt@elegantniweb.cz";
-
-    if (!resendApiKey) {
-      console.error("Missing RESEND_API_KEY environment variable.");
-      return Response.json(
-        { error: "Emailová služba není správně nakonfigurována." },
-        { status: 500 }
-      );
-    }
-
-    if (!contactEmail) {
-      console.error("Missing CONTACT_EMAIL environment variable.");
-      return Response.json(
-        { error: "Konfigurace emailu není dokončena." },
-        { status: 500 }
-      );
-    }
-
-    const resend = new Resend(resendApiKey);
-
     const body = await request.json();
     const {
       name,
@@ -39,6 +21,33 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    await ensureContactFormReady();
+    const record = await ContactForm.create({
+      name,
+      email,
+      phone,
+      service_interest,
+      message,
+    });
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const contactEmail = process.env.CONTACT_EMAIL;
+    const fromEmail =
+      process.env.RESEND_FROM_EMAIL ?? "kontakt@elegantniweb.cz";
+
+    if (!resendApiKey || !contactEmail) {
+      const missing = !resendApiKey ? "RESEND_API_KEY" : "CONTACT_EMAIL";
+      console.error(
+        `Missing ${missing} environment variable. Inquiry stored with ID ${record.id}`
+      );
+      return Response.json(
+        { error: "Emailová služba není správně nakonfigurována." },
+        { status: 500 }
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
 
     const textContent = [
       `Jméno: ${name}`,

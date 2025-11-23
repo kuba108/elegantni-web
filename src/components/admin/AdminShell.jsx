@@ -8,6 +8,7 @@ import { Heart } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/inquiries", label: "Dotazy" },
   { href: "/admin/users", label: "Uživatelé" },
 ];
 
