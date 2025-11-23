@@ -8,6 +8,9 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverComponentsExternalPackages: ["sequelize", "pg", "pg-hstore", "bcryptjs"],
+  },
 };
 
 export default nextConfig;
