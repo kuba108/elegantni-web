@@ -3,13 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import StatCard from "@/components/admin/StatCard";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+const PAGE_SIZE = 20;
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const loadInquiries = async () => {
     setLoading(true);
@@ -23,6 +27,7 @@ export default function AdminInquiriesPage() {
         throw new Error(data.error || "Nepodařilo se načíst dotazy.");
       }
       setInquiries(data.inquiries || []);
+      setPage(1);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -34,12 +39,40 @@ export default function AdminInquiriesPage() {
     loadInquiries();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [search, inquiries.length]);
+
+  const filteredInquiries = useMemo(() => {
+    if (!search) return inquiries;
+    const query = search.toLowerCase();
+    return inquiries.filter((item) => {
+      return [item.name, item.email, item.phone, item.service_interest, item.message]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(query));
+    });
+  }, [inquiries, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredInquiries.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginatedInquiries = filteredInquiries.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
   const stats = useMemo(() => {
-    const total = inquiries.length;
-    const processed = inquiries.filter((item) => item.processed).length;
+    const total = filteredInquiries.length;
+    const processed = filteredInquiries.filter((item) => item.processed).length;
     const pending = total - processed;
     return { total, processed, pending };
-  }, [inquiries]);
+  }, [filteredInquiries]);
+
+  const handlePageChange = (direction) => {
+    setPage((prev) => {
+      const next = direction === "next" ? prev + 1 : prev - 1;
+      return Math.min(Math.max(1, next), totalPages);
+    });
+  };
 
   return (
     <div className="space-y-10">
@@ -72,39 +105,53 @@ export default function AdminInquiriesPage() {
         </div>
       )}
 
-      <section className="grid md:grid-cols-3 gap-6">
-        <StatCard
-          label="Celkem"
-          value={stats.total}
-          sublabel="Všechny přijaté dotazy"
-        />
-        <StatCard
-          label="Čeká na zpracování"
-          value={stats.pending}
-          sublabel="Důležité vyřídit jako první"
-        />
-        <StatCard
-          label="Vyřízeno"
-          value={stats.processed}
-          sublabel="Uzavřené poptávky"
-        />
-      </section>
-
       <section className="space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <h3 className="text-xl font-semibold">Seznam dotazů</h3>
-          <p className="text-white/50 text-sm">
-            {loading ? "Načítám…" : `${stats.pending} čeká na zpracování`}
-          </p>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-1 min-w-[220px] max-w-xl gap-3">
+            <Input
+              placeholder="Filtrovat podle jména, emailu nebo obsahu…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3 text-white/60 text-sm">
+            <span>
+              Stránka {currentPage} / {totalPages}
+            </span>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                className="rounded-full border border-white/20 bg-white/5 hover:bg-white/10"
+                onClick={() => handlePageChange("prev")}
+                disabled={currentPage === 1}
+              >
+                Předchozí
+              </Button>
+              <Button
+                variant="ghost"
+                className="rounded-full border border-white/20 bg-white/5 hover:bg-white/10"
+                onClick={() => handlePageChange("next")}
+                disabled={currentPage === totalPages}
+              >
+                Další
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="text-white/50 text-sm">
+          {loading
+            ? "Načítám dotazy…"
+            : `${stats.pending} z ${stats.total} čeká na zpracování`}
         </div>
 
         {loading ? (
           <p className="text-white/60">Načítám dotazy…</p>
-        ) : inquiries.length === 0 ? (
+        ) : paginatedInquiries.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="space-y-4">
-            {inquiries.map((inquiry) => (
+          <div className="space-y-3">
+            {paginatedInquiries.map((inquiry) => (
               <InquiryCard key={inquiry.id} inquiry={inquiry} />
             ))}
           </div>
@@ -125,21 +172,23 @@ function InquiryCard({ inquiry }) {
   });
 
   return (
-    <Link href={`/admin/inquiries/${inquiry.id}`}>
-      <Card className="border border-white/15 bg-white/5 backdrop-blur-2xl rounded-3xl hover:border-white/40 transition">
-        <CardContent className="p-6 space-y-3">
+    <Link href={`/admin/inquiries/${inquiry.id}`} className="block">
+      <Card className="border border-white/12 bg-white/5 backdrop-blur-2xl rounded-2xl hover:border-white/40 transition">
+        <CardContent className="p-5 space-y-2">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+            <div className="space-y-1">
+              <p className="text-[11px] uppercase tracking-[0.3em] text-white/40">
                 {inquiry.service_interest || "nezadáno"}
               </p>
-              <h4 className="text-2xl text-white font-semibold">{inquiry.name}</h4>
+              <h4 className="text-xl text-white font-semibold">{inquiry.name}</h4>
+              <p className="text-sm text-white/60">{inquiry.email}</p>
             </div>
             <StatusBadge processed={inquiry.processed} />
           </div>
-          <p className="text-white/70 text-sm line-clamp-2">{inquiry.message}</p>
-          <div className="flex flex-wrap items-center gap-4 text-xs text-white/60">
-            <span>{inquiry.email}</span>
+          <p className="text-white/70 text-sm leading-relaxed line-clamp-2">
+            {inquiry.message}
+          </p>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-white/50">
             {inquiry.phone && <span>{inquiry.phone}</span>}
             <span>{formattedDate}</span>
           </div>

@@ -2,17 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { fetchOrders } from "@/api/orders";
 import { fetchContactForms } from "@/api/contactForms";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
-
-const statCards = [
-  { label: "Celkem objednávek", key: "total", accent: "text-white" },
-  { label: "Čeká na schválení", key: "toApprove", accent: "text-yellow-300" },
-  { label: "Schváleno", key: "approved", accent: "text-emerald-300" },
-];
 
 const motivationalQuotes = [
   { text: "Doufám, že se máš naprosto skvěle.", author: "Vašek Tomanec" },
@@ -69,11 +62,6 @@ const motivationalQuotes = [
 ];
 
 export default function AdminDashboardPage() {
-  const [orderStats, setOrderStats] = useState({
-    total: 0,
-    toApprove: 0,
-    approved: 0,
-  });
   const [inquiryStats, setInquiryStats] = useState({
     total: 0,
     pending: 0,
@@ -88,19 +76,8 @@ export default function AdminDashboardPage() {
     let isMounted = true;
     async function loadDashboardData() {
       try {
-        const [ordersData, inquiriesData] = await Promise.all([
-          fetchOrders(),
-          fetchContactForms(),
-        ]);
+        const inquiriesData = await fetchContactForms();
         if (!isMounted) return;
-        const orders = ordersData.orders || [];
-        const toApprove = orders.filter((o) => o.status === "to_approve").length;
-        const approved = orders.filter((o) => o.status === "approved").length;
-        setOrderStats({
-          total: orders.length,
-          toApprove,
-          approved,
-        });
         const inquiries = inquiriesData.inquiries || [];
         const processed = inquiries.filter((item) => item.processed).length;
         setInquiryStats({
@@ -168,31 +145,8 @@ export default function AdminDashboardPage() {
       {error && (
         <div className="bg-red-500/10 border border-red-400/40 text-red-200 px-4 py-3 rounded-2xl backdrop-blur-xl">
           {error}
-      </div>
-    )}
-
-    <div className="grid md:grid-cols-3 gap-6">
-      {statCards.map((card) => (
-          <GlassCard key={card.key}>
-            <CardContent className="p-6 space-y-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">
-                {card.label}
-              </p>
-              <p className={`text-5xl font-light ${card.accent}`}>
-                {orderStats[card.key]}
-              </p>
-              <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-              <p className="text-xs text-white/50">
-                {card.key === "toApprove"
-                  ? "Věnujte se těmto poptávkám jako prvním."
-                  : card.key === "approved"
-                  ? "Hotové objednávky připravené k realizaci."
-                  : "Celkový objem přijatých požadavků."}
-              </p>
-            </CardContent>
-          </GlassCard>
-        ))}
-      </div>
+        </div>
+      )}
 
       <section className="grid md:grid-cols-3 gap-6">
         <StatCard
@@ -214,14 +168,6 @@ export default function AdminDashboardPage() {
 
       <QuoteCard quote={activeQuote} onShuffle={handleShuffleQuote} />
     </div>
-  );
-}
-
-function GlassCard({ children }) {
-  return (
-    <Card className="border border-white/15 bg-white/5 backdrop-blur-2xl shadow-[0_20px_120px_rgba(15,23,42,0.45)] rounded-3xl">
-      {children}
-    </Card>
   );
 }
 
