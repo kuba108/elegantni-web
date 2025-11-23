@@ -32,7 +32,7 @@ export default function Footer() {
             <div className="space-y-3 text-gray-400">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-orange-400" />
-                <span>kuba@elegantniweb.cz</span>
+                <span><a href="mailto:kuba@elegantniweb.cz">kuba@elegantniweb.cz</a></span>
               </div>
             </div>
           </div>
