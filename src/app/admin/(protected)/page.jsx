@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
       <header className="space-y-3">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-xs uppercase tracking-[0.4em] text-white/60">
-            Blixo Admin
+            Elegantniweb Admin
           </div>
           {loading && (
             <span className="text-xs text-white/60 animate-pulse">
@@ -212,7 +212,7 @@ function QuoteCard({ quote, onShuffle }) {
           &ldquo;{quote.text}&rdquo;
         </blockquote>
         <p className="text-sm text-white/60 uppercase tracking-[0.3em]">
-          {quote.author || "Blixo Crew"}
+          {quote.author || "Elegantniweb Crew"}
         </p>
       </CardContent>
     </Card>

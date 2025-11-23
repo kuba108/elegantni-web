@@ -8,8 +8,6 @@ import { Heart } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
-  { href: "/admin/orders", label: "Objednávky" },
-  { href: "/admin/slots", label: "Termíny" },
   { href: "/admin/users", label: "Uživatelé" },
 ];
 
@@ -22,7 +20,7 @@ export default function AdminShell({ children, admin }) {
           <div className="p-8 space-y-8">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-white/40">
-                Blixo
+                Elegantniweb
               </p>
               <h1 className="text-3xl font-semibold mt-2">Admin</h1>
             </div>
