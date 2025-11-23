@@ -1,67 +1,30 @@
-'use server';
-
 import crypto from "node:crypto";
+import process from "node:process";
+import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { Op } from "sequelize";
-import { AdminUser, ensureAdminUserReady } from "@/models/AdminUser";
+import { AdminUser, ensureAdminUserReady } from "../models/AdminUser.js";
 
-const SESSION_COOKIE_NAME = "admin_session";
-const DEFAULT_SESSION_TTL = 60 * 60 * 24 * 7; // 7 days
+const SESSION_COOKIE = "admin_session";
+const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+const DEFAULT_EMAIL = process.env.ADMIN_DEFAULT_EMAIL;
+const DEFAULT_PASSWORD = process.env.ADMIN_DEFAULT_PASSWORD;
 
-const sessionTtl =
-  Number.parseInt(process.env.ADMIN_SESSION_TTL ?? "", 10) ||
-  DEFAULT_SESSION_TTL;
-
-const cookieBaseOptions = {
-  httpOnly: true,
-  sameSite: "lax",
-  path: "/",
-  secure: process.env.NODE_ENV === "production",
-};
-
-function setSessionCookie(token, expiresAt) {
-  cookies().set(SESSION_COOKIE_NAME, token, {
-    ...cookieBaseOptions,
-    expires: expiresAt,
-    maxAge: sessionTtl,
-  });
+export function hashPassword(plain) {
+  const saltRounds = 12;
+  return bcrypt.hash(plain, saltRounds);
 }
 
-export async function createAdminSession(admin) {
-  await ensureAdminUserReady();
-  const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + sessionTtl * 1000);
-
-  await admin.update({
-    session_token: token,
-    session_expires_at: expiresAt,
-    last_login_at: new Date(),
-  });
-
-  setSessionCookie(token, expiresAt);
-
-  return { token, expiresAt };
-}
-
-export async function clearAdminSession() {
-  await ensureAdminUserReady();
-  const cookieStore = cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (token) {
-    await AdminUser.update(
-      { session_token: null, session_expires_at: null },
-      { where: { session_token: token } }
-    );
-  }
-  cookieStore.delete(SESSION_COOKIE_NAME);
+export function verifyPassword(plain, hash) {
+  return bcrypt.compare(plain, hash);
 }
 
 export async function getCurrentAdmin() {
   await ensureAdminUserReady();
-  const token = cookies().get(SESSION_COOKIE_NAME)?.value;
+  const store = cookies();
+  const token = store.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-
-  const admin = await AdminUser.findOne({
+  return AdminUser.findOne({
     where: {
       session_token: token,
       is_active: true,
@@ -70,13 +33,6 @@ export async function getCurrentAdmin() {
       },
     },
   });
-
-  if (!admin) {
-    cookies().delete(SESSION_COOKIE_NAME);
-    return null;
-  }
-
-  return admin;
 }
 
 export async function requireAdmin(options = {}) {
@@ -88,4 +44,54 @@ export async function requireAdmin(options = {}) {
     throw new Error("Forbidden");
   }
   return admin;
+}
+
+export async function startAdminSession(user) {
+  const token = crypto.randomUUID();
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
+
+  user.session_token = token;
+  user.session_expires_at = expiresAt;
+  await user.save();
+
+  const store = cookies();
+  store.set({
+    name: SESSION_COOKIE,
+    value: token,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: expiresAt,
+    path: "/",
+  });
+}
+
+export async function endAdminSession() {
+  const store = cookies();
+  const token = store.get(SESSION_COOKIE)?.value;
+  if (token) {
+    await AdminUser.update(
+      { session_token: null, session_expires_at: null },
+      { where: { session_token: token } }
+    );
+  }
+  store.delete(SESSION_COOKIE);
+}
+
+export function canUseEnvAdmin() {
+  return Boolean(DEFAULT_EMAIL && DEFAULT_PASSWORD);
+}
+
+export async function verifyEnvAdmin(email, password) {
+  if (!canUseEnvAdmin()) return false;
+  if (email !== DEFAULT_EMAIL) return false;
+  return password === DEFAULT_PASSWORD;
+}
+
+export async function createAdminSession(admin) {
+  return startAdminSession(admin);
+}
+
+export async function clearAdminSession() {
+  return endAdminSession();
 }

@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
 import { AdminUser, ensureAdminUserReady } from "@/models/AdminUser";
-import { createAdminSession } from "@/lib/auth";
+import {
+  createAdminSession,
+  hashPassword,
+  verifyEnvAdmin,
+} from "@/lib/auth";
 
 export async function POST(request) {
   try {
@@ -16,20 +20,28 @@ export async function POST(request) {
 
     await ensureAdminUserReady();
 
-    const admin = await AdminUser.findOne({ where: { email } });
-    if (!admin || !admin.is_active) {
-      return Response.json(
-        { error: "Nesprávné přihlašovací údaje." },
-        { status: 401 }
-      );
+    let admin = await AdminUser.findOne({ where: { email } });
+    let passwordValid = false;
+
+    if (admin && admin.is_active) {
+      passwordValid = await bcrypt.compare(password, admin.password_hash);
+      if (!passwordValid && (await verifyEnvAdmin(email, password))) {
+        admin.password_hash = await hashPassword(password);
+        await admin.save();
+        passwordValid = true;
+      }
+    } else if (await verifyEnvAdmin(email, password)) {
+      admin = await AdminUser.create({
+        email,
+        password_hash: await hashPassword(password),
+        name: "Admin",
+        role: "admin",
+        is_active: true,
+      });
+      passwordValid = true;
     }
 
-    const isValidPassword = await bcrypt.compare(
-      password,
-      admin.password_hash
-    );
-
-    if (!isValidPassword) {
+    if (!admin || !passwordValid || !admin.is_active) {
       return Response.json(
         { error: "Nesprávné přihlašovací údaje." },
         { status: 401 }
