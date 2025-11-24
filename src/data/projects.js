@@ -20,7 +20,7 @@ const projects = [
     url: "https://www.prodamauto.cz",
     image_url: prodamAutoImg.src,
     description:
-      "Moderní prezentační web postavený na Next.js a Tailwind CSS s důrazem na výkon, animace a plynulou UX."
+      "Moderní inzertní web pro prodej a nákup ojetých vozidel s pokročilými filtry a uživatelským přístupem."
   },
 ];
 
