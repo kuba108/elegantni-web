@@ -8,8 +8,6 @@ const nextConfig = {
       },
     ],
   },
-  // Next 16 replaces experimental.serverComponentsExternalPackages with a top-level option.
-  serverExternalPackages: ["sequelize", "pg", "pg-hstore", "bcryptjs"],
 };
 
 export default nextConfig;

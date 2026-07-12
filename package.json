@@ -8,8 +8,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "node scripts/migrate.js",
-    "c": "node scripts/console.js",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
@@ -40,7 +38,6 @@
     "@radix-ui/react-toggle": "^1.1.2",
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
-    "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
@@ -52,8 +49,6 @@
     "lucide-react": "^0.475.0",
     "next": "16.0.10",
     "next-themes": "^0.4.4",
-    "pg": "^8.16.3",
-    "pg-hstore": "^2.3.4",
     "react": "^18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
@@ -61,7 +56,6 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.1",
     "resend": "^6.2.2",
-    "sequelize": "^6.37.7",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
